@@ -1,0 +1,154 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>微博</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="top">
+    <div class="top_content">
+        <div class="logo">
+
+        </div>
+        <div class="search_bar">
+            <div class="input-group">
+                <input type="text" class="form-control">
+                <span class="input-group-btn">
+						<button class="btn btn-default" type="button">
+							<span class="glyphicon glyphicon-search"></span>
+						</button>
+					</span>
+            </div><!-- /input-group -->
+        </div>
+        {% if request.user.is_authenticated %}
+            <div class="user_config">
+                <ul>
+                    <li><a href="">个人中心</a></li>
+                </ul>
+            </div>
+        {% else %}
+            <div class="user_config">
+                <ul>
+                    <li><a href="{% url 'register' %}">注册</a></li>
+                    <li><a href="{% url 'login' %}">登录</a></li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</div><!-- top顶部栏结束 -->
+
+<div class="wrap">
+    <div class="main">
+        <div class="main_left">
+            <ul class="list-group">
+                <li class="list-group-item">免费域名注册</li>
+                <li class="list-group-item">免费 Window 空间托管</li>
+                <li class="list-group-item">图像的数量</li>
+                <li class="list-group-item">24*7 支持</li>
+                <li class="list-group-item">每年更新成本</li>
+                <li class="list-group-item">免费域名注册</li>
+                <li class="list-group-item">免费 Window 空间托管</li>
+                <li class="list-group-item">图像的数量</li>
+                <li class="list-group-item">24*7 支持</li>
+                <li class="list-group-item">每年更新成本</li>
+            </ul>
+        </div>
+        <div class="main_mid">
+
+
+            {% for blog in blogs.object_list %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            {{ blog.user.username }}
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <span class="hidden">{{ blog.judgefold }}</span>
+                        {% if  blog.need_unfold == 0 %}
+                            {{ blog.content }}
+                        {% elif blog.need_unfold == 1 %}
+                            {{ blog.shorttext }}<a id="foldhref" onclick="unfold()">展开</a>
+                        {% endif %}
+
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        带有 title 的面板标题
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    面板内容
+                </div>
+            </div>
+
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    这是一个基本的面板
+                </div>
+                <div class="panel-footer">面板脚注</div>
+            </div>
+
+        </div>
+        <div class="main_right">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    这是一个基本的面板
+                </div>
+            </div>
+
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p>这是一个基本的面板</p>
+                    <p>这是一个基本的面板</p>
+                    <p>这是一个基本的面板</p>
+                    <p>这是一个基本的面板</p>
+                    <p>这是一个基本的面板</p>
+                    <p>这是一个基本的面板</p>
+                </div>
+            </div>
+
+        </div>
+    </div><!-- main结束 -->
+
+    <div class="pagination" style="text-align: center" >
+        {% if blogs.has_previous %}
+            <a href="?{{ blogs.previous_page_number.querystring }}"
+               class="prev">&lsaquo;&lsaquo; 上一页</a>
+
+        {% endif %}
+        {% for page in blogs.pages %}
+            {% if page %}
+                {% ifequal page blogs.number %}
+                    <span class="current page">{{ page }}</span>
+                {% else %}
+                    <a href="?{{ page.querystring }}" class="page">{{ page }}</a>
+                {% endifequal %}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+        {% if blogs.has_next %}
+            <a href="?{{ blogs.next_page_number.querystring }}" class="next">下一页 &rsaquo;&rsaquo;</a>
+        {% endif %}
+    </div>
+
+</div><!-- wrap结束 -->
+</body>
+<script type="text/javascript">
+    function unfold() {
+        {#alert("he")#}
+
+    }
+</script>
+</html>

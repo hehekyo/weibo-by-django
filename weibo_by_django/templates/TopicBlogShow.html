@@ -1,0 +1,14 @@
+{% extends 'MainPage.html' %}
+
+{% block title %}微博话题{% endblock %}
+
+{% block send_blog %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        <p>关于<a href="{% url 'weibo:topic' the_topic.id %}">#{{ the_topic }}#</a>话题的微博</p>
+    </div></div>
+
+{% endblock %}
+
+{% block sort %}
+{% endblock %}

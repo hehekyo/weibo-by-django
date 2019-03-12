@@ -1,0 +1,116 @@
+{% extends 'base2.html' %}
+{% block title %}修改个人信息{% endblock %}
+{% load static %}
+
+
+
+{% block left %}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            信息修改
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+{% block right %}
+    {#所有微博按热度排名#}
+
+    <div class="panel panel-default">
+
+        <div class="panel-body">
+
+            <div style="padding: 10px 10px 10px;">
+                <p>头像</p>
+                <img src="{{ MEDIA_URL }}{{ user.image }}" style="height: 200px; width: 300px;">
+                <form class="bs-example bs-example-form" role="form" method="post" action="{% url 'operation:image' %}"
+                      id="blogcontentform" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <img id="cropedBigImg" value='custom' alt="图片区" data-address='' title="上传图片"
+                         style="height: 50px;width: 100px;"/>
+                    <label class="ui-upload">新头像
+                        <input type="file" style="display: none;" id="chooseImage" name="image">
+
+                    </label>
+                    <button type="submit" class="btn btn-default">确定修改</button>
+                </form>
+
+                <form class="bs-example bs-example-form" role="form" method="post"
+                      action="{% url 'operation:user_info' %}">
+                    {% csrf_token %}
+                    <div class="info_input">
+                        <div class="input-group">
+                            <span class="input-group-addon">昵称</span>
+                            <input type="text" class="form-control" placeholder="twitterhandle"
+                                   value="{{ user.nickname }}"
+                                   name="nickname">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">地址</span>
+                            <input type="text" class="form-control" value="{{ user.address }}" name="address">
+
+                        </div>
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">手机</span>
+                            <input type="text" class="form-control" value="{{ user.mobile }}" name="mobile">
+                        </div>
+                        <p>{{ msg }}</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-default" id="submit">确定修改</button>
+                </form>
+
+                <form class="bs-example bs-example-form" role="form" method="post" action="{% url 'operation:pwd' %}">
+                    {% csrf_token %}
+                    <div class="info_input">
+                        <div class="input-group">
+                            <span class="input-group-addon">旧密码</span>
+                            <input type="password" class="form-control" name="password1">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">新密码</span>
+                            <input type="password" class="form-control" name="password2">
+
+                        </div>
+                        <br>
+                        <p>{{ msg_pwd }}</p>
+                    </div>
+                    <button type="submit" class="btn btn-default" id="submit">修改密码</button>
+                </form>
+
+            </div>
+
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block custom_css %}
+    <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+{% endblock %}
+
+{% block custom_js %}
+    <script>
+        $(function () {
+            $('#chooseImage').on('change', function () {
+                var filePath = $(this).val(),         //获取到input的value，里面是文件的路径
+                    fileFormat = filePath.substring(filePath.lastIndexOf(".")).toLowerCase(),
+                    src = window.URL.createObjectURL(this.files[0]); //转成可以在本地预览的格式
+                // 检查是否是图片
+                if (!fileFormat.match(/.png|.jpg|.jpeg/)) {
+                    error_prompt_alert('上传错误,文件格式必须为：png/jpg/jpeg');
+                    return;
+                }
+
+                $('#cropedBigImg').attr('src', src);
+
+            });
+        });
+    </script>
+{% endblock %}

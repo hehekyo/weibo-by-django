@@ -1,0 +1,56 @@
+{% load staticfiles %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>登录</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+            integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+            integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+            crossorigin="anonymous"></script>
+
+    <!-- Custom styles for this template -->
+    <link href="signin.css" rel="stylesheet">
+</head>
+<body class="text-center container">
+<form class="form-signin" action="{% url 'login' %}" method="POST">
+    {% csrf_token %}
+    <img class="mb-4" src="{% static 'images/logo.png' %}" alt="无法显示" style="width:200px;height: 200px;margin-top: 30px">
+    <h1 class="h3 mb-3 font-weight-normal">请登录</h1>
+    <div class="form-group col-sm-4 offset-sm-4 {% if login_form.errors.username %}errorput{% endif %}">
+        <label for="inputUsername" class="sr-only">用户名</label>
+        <input type="text" id="inputUsername" class="form-control" placeholder="用户名/邮箱" name="username"
+               value="{% if login_form.username.value is not None %}{{ login_form.username.value }}{% endif %}" >
+    </div>
+    <div class="form-group col-sm-4 offset-sm-4 {% if login_form.errors.password %}errorput{% endif %}">
+        <label for="inputPassword" class="sr-only">密码</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="密码" name="password"
+               value="{% if login_form.password.value is not None %}{{ login_form.password.value }}{% endif %}">
+    </div>
+    <div>
+        <p>{% for key,error in login_form.errors.items %}{{ key }}:{{ error }}{% endfor %}</p>
+        <p>{{ errmsg }}</p>
+    </div>
+    <div class="checkbox mb-3">
+        <label>
+            <input type="checkbox" value="remember-me"> Remember me
+        </label>
+    </div>
+    <a href="{% url "register" %}">注册</a>&emsp;
+    <button class="btn btn-primary col-sm-1" type="submit">登录</button>
+</form>
+    <div>
+        <a href="{% url "findbackpwd" %}"><span style="font-size: small">忘记密码</span></a>
+        <p class="mt-5 mb-3 text-muted">&copy; 2018-2019</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+.top_user_info
+{
+
+}
+.top_user_icon
+{
+    width: 100px;
+    height: 100px;
+    margin: 20px auto;
+}
+.top_operation
+{
+    /*overflow: hidden;*/
+    /*!*width: 20px;*!*/
+    /*margin: 0 auto;*/
+margin-left: 420px;
+    /*!*white-space: nowrap;*!*/
+/*!*display: inline-block;*!*/
+
+}
+.top_operation button
+{
+    text-align: center;
+}
+.opeartion_child
+{
+    float: left;
+    display: inline-block;
+}
+.follow_user_icon
+{
+    height: 40px;
+    width: 40px;
+    float: left;
+}
+.follow_user_info
+{
+    float: left;
+}
+.one_user
+{
+    padding: 10px;
+    border-top:1px solid #BEBEBE;
+    margin: 10px;
+    overflow: hidden;
+}
+.follow_user_info
+{
+    margin-left: 50px;
+}
+.info_input
+{
+    width: 400px;
+    padding: 20px;
+    margin: 20px;
+    border-top:1px solid #BEBEBE;
+}

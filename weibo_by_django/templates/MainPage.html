@@ -1,0 +1,493 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}微博{% endblock %}</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
+    <script src="https://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js"></script>
+    <link type="text/css" rel="stylesheet" charset="utf-8"
+          href="//img.t.sinajs.cn/t6/style/css/module/base/frame.css?version=c69170cdbd0e840f"
+    >
+    <link type="text/css" rel="stylesheet" charset="utf-8"
+          href="//img.t.sinajs.cn/t6/style/css/module/combination/PCD_profile_home_A.css?version=c69170cdbd0e840f"
+    >
+    <link type="text/css" rel="stylesheet" charset="utf-8"
+          href="//img.t.sinajs.cn/t6/skin/skin048/skin.css?version=c69170cdbd0e840f" id="skin_style">
+    <!-- $CONFIG -->
+    <!-- / $CONFIG -->
+    <link rel="stylesheet" type="text/css"
+          href="//img.t.sinajs.cn/t6/style/css/module/pagecard/PCD_pictext_f.css?version=c69170cdbd0e840f"
+          id="FM_154701213886013">
+
+</head>
+<body>
+<div class="WB_miniblog">
+
+    <div class="WB_main clearfix" id="plc_frame">
+        <div id="pl_common_top">
+            <div class="WB_global_nav WB_global_nav_v2 UI_top_hidden ">
+
+                <div class="top">
+                    <div class="top_content">
+                        <div class="logo">
+                            <a href="{% url 'mainpage' %}">
+                                <div class="logo">
+                                    <img src="{% static 'images/logo.png' %}" class="img-rounded img-responsive"
+                                         style="height: 40px">
+                                </div>
+                            </a>
+                        </div>
+                        {#        搜索框#}
+                        <div class="search_bar">
+                            <div class="input-group">
+                                <form id="topicSearchform" action="{% url "weibo:search" %}" method="post">
+                                    {% csrf_token %}
+                                    <span class="input-group-btn">
+                    <input type="text" class="form-control" name="searchtext" placeholder="搜索话题">
+
+                    <input type="text" hidden name="searchtype" value="topic">
+
+						<button class="btn btn-default" type="submit" id="topicSearchbtn">
+							<span class="glyphicon glyphicon-search"></span>
+						</button>
+                </span>
+                                </form>
+
+
+                                <p id="topicSearchtip"></p>
+                            </div><!-- /input-group -->
+                        </div>
+
+                        {% if request.user.is_authenticated %}
+                            <div class="user_config">
+                                <ul>
+                                    <li><a href="{% url 'operation:message' %}">提到我的 {{ request.user.message_nums }}</a>
+                                    </li>
+                                    <li><a href="{% url 'operation:user_info' %}">修改设置</a></li>
+                                    <li><a href="/user/{{ request.user.id }}">个人中心</a></li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <div class="user_config">
+                                <ul>
+                                    <li><a href="{% url 'register' %}">注册</a></li>
+                                    <li><a href="{% url 'login' %}">登录</a></li>
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div><!-- top结束 -->
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="wrap">
+        <div class="main">
+            <div class="main_left">
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="{% url 'mainpage' %}">首页</a></li>
+                    <li class="list-group-item"><a href="{% url 'user:mycollect' %}">我的收藏</a></li>
+                    <li class="list-group-item"><a href="{% url 'user:mygood' %}">我的赞</a></li>
+                    <li class="list-group-item"><a href="{% url 'hotblogs' %}">热门微博</a></li>
+
+                </ul>
+            </div>
+
+
+            <div class="main_mid">
+                {% if request.user.is_authenticated %}
+                    {% block send_blog %}
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+
+                                <div class="title_area">
+                                    <p>有什么新鲜事想要告诉大家</p>
+                                </div>
+                                <div class="form-group">
+                                    <form role="form" id="blogcontentform" class="container"
+                                          enctype="multipart/form-data"
+                                          action="{% url "weibo:sendblog" %}" method="post">
+                                        {% csrf_token %}
+
+                                        <!-- <label for="name">文本框</label> -->
+                                        <textarea class="form-control" rows="3" name="content"
+                                                  style="width: 550px;"></textarea>
+                                        <img id="cropedBigImg" value='custom' alt="图片区" data-address='' title="上传图片"
+                                             style="height: 50px;width: 100px;"/>
+                                        <label class="ui-upload">图片
+                                            <input type="file" style="display: none;" id="chooseImage" name="image">
+
+                                        </label>
+
+                                        <button type="submit" class="btn btn-info col-sm-offset-3" id="sendblogbtn">
+                                            发布
+                                        </button>
+
+                                    </form>
+                                </div>
+                                <!--                           <label for="upload" class="ui-upload">upload</label>
+                                                          <input type="file" id="upload" style="display: none;" /> -->
+
+
+                                {#                        <div class="input_bottom">#}
+                                {##}
+                                {#                            <button type="button" class="btn right_btn" id="sendblogbtn">发布</button>#}
+                                {#                        </div>#}
+
+                            </div>
+                            <p id="sendCompanyTips"></p>
+                        </div>
+                    {% endblock %}
+
+                    {% block sort %}
+                        <div class="nav_div">
+                            <ul class="nav nav-tabs">
+                                {% block  sech %}
+                                    <li {% if sort == 'time' or sort == '' %}class="active"{% endif %}><a
+                                            href="?sort=time">全部</a>
+                                    </li>
+                                    <li {% if sort == 'hot' %}class="active"{% endif %}><a href="?sort=hot">热门</a></li>
+                                    <li {% if sort == 'comment' %}class="active"{% endif %}><a
+                                            href="?sort=comment">评论</a>
+                                    </li>
+                                {% endblock %}
+                                <div class="fr_box W_fr " style="position: relative; top: 10px">
+                                    <div class="search_box W_fr">
+                    <span class="WB_search_s">
+                    <form id="myblogsearchform" method="post" action="{% url "weibo:search" %}">
+                        {% csrf_token %}
+                        <input type="text" name="searchtext" class="W_input" placeholder="搜索微博"><span class="pos">
+                        <input type="text" hidden name="searchtype" value="allblogs">
+                        <button type="submit" class="W_ficon ficon_search S_ficon S_ficon_dis"
+                                style="position: absolute;right: -5px; top: -2px;height: 23px;"><span>f</span></button>
+{#                        <a href="" title="搜索" class="W_ficon ficon_search S_ficon S_ficon_dis"  id="myblogsearchbtn"  >f</a>#}
+{#                        <a href="" class="W_ficon ficon_arrow_down_lite S_ficon" title="高级搜索"#}
+{#                            onclick="return false;">g</a>#}
+                    </span>
+                    </form>
+                        <p id="myblogsearchtip"></p>
+                    </span>
+                                    </div>
+                                </div>
+                            </ul>
+
+                        </div>
+                    {% endblock %}
+
+                    {% block blog_mid %}
+                        {% for blog in blogs.object_list %}
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="user_icon">
+                                        <a href="/user/{{ blog.user.id }}"><img
+                                                src="{{ MEDIA_URL }}{{ blog.user.image }}"
+                                                class="img-circle img-responsive"
+                                        ></a>
+                                    </div>
+                                    <div class="blog_main">
+                                        <div class="blog_user"><a
+                                                href="/user/{{ blog.user.id }}">{{ blog.user.nickname }}</a>
+                                        </div>
+                                        <div class="blog_time"><a
+                                                href="{% url 'weibo:blogtext' blog.id %}">{{ blog.add_time }}</a>
+                                        </div>
+                                        <div class="blog_content">
+                                            <p>
+                                                {% autoescape off %}
+                                                    {{ blog.content }}...
+                                                {% endautoescape %}
+                                                <a href="{% url 'weibo:blogtext' blog.id %}">查看微博</a></p>
+                                        </div>
+                                        {% if blog.has_pic == 1 %}
+                                            <div><img src="{{ MEDIA_URL }}{{ blog.image }}"
+                                                      style="width: 50px;height: 30px;"></div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="panel-footer blog_bottom">
+                                    <ul>
+                                        <a href="{% url 'weibo:collect' blog.id %}" id="collecttag">
+                                            <li><span class="glyphicon glyphicon-star-empty"
+                                                      id="collcontent">收藏{{ blog.collect_num }}</span></li>
+                                        </a>
+                                        <a href="{% url 'weibo:blogtext' blog.id %}">
+                                            <li><span class="glyphicon ">阅读{{ blog.click_num }}</span></li>
+                                        </a>
+                                        <a href="{% url 'weibo:blogtext' blog.id %}">
+                                            <li><span
+                                                    class="glyphicon glyphicon-comment">评论{{ blog.comment_num }}</span>
+                                            </li>
+                                        </a>
+
+                                        <a href="{% url 'weibo:good' blog.id %}">
+                                            <li class="lastItem"><span
+                                                    class="glyphicon glyphicon-thumbs-up">点赞{{ blog.good_num }}</span>
+                                            </li>
+                                        </a>
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endif %}
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="user_icon">
+                            <img src="{% static 'images/2018102819422361018.jpg' %}"
+                                 class="img-circle img-responsive">
+                        </div>
+                        <div class="blog_main">
+                            <div class="blog_user">tour</div>
+                            <div class="blog_time">2018年9月9日</div>
+                            <div class="blog_content">
+                                <p>欢迎使用微博</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {#                <div class="panel panel-default">#}
+                {#                    <div class="panel-body">#}
+                {#                        这是一个基本的面板#}
+                {#                    </div>#}
+                {#                    <div class="panel-footer">面板脚注</div>#}
+                {#                </div>#}
+
+            </div>
+            <div class="main_right">
+                {% if request.user.is_authenticated %}
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+
+                            <div class="right_user_icon">
+                                <a href="/user/{{ user.id }}">
+                                    <img src="{{ MEDIA_URL }}{{ request.user.image }}"
+                                         class="img-circle img-responsive">
+                                </a>
+                            </div>
+                            <div class="right_user_name">
+                                {{ request.user.nickname }}
+                            </div>
+
+
+                            <div class="right_user_info">
+                                {#            <a href="{% url 'operation:user_follow' %}">#}
+                                <a href="{% url 'operation:user_follow' request.user.id %}">
+                                    <li class="not_last">
+                                        <p>{{ request.user.follow_num }}</p>
+                                        <p>关注</p>
+                                    </li>
+                                </a>
+
+                                {#            <a href="{% url 'operation:user_fans' %}">#}
+                                <a href="{% url 'operation:user_fans' request.user.id %}">
+                                    <li class="not_last">
+                                        <p>{{ request.user.fans_set.count }}</p>
+                                        <p>粉丝</p>
+                                    </li>
+                                </a>
+
+                                {#            <a href="{% url 'miniblog:homepage' request.user.id %}">#}
+                                <a href="{% url 'user:userpage' request.user.id %}">
+                                    <li class="lastItem">
+                                        <p>{{ request.user.miniblog_set.count }}</p>
+                                        <p>微博</p>
+                                    </li>
+                                </a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="login_title">账号登录</div>
+                            <form id="denluform">
+                                {% csrf_token %}
+                                <div class="input-group">
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-user"></span></span>
+                                    <input type="text" class="form-control" name="username" placeholder="输入用户名">
+                                </div>
+                                <div class="input-group password">
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-lock"></span></span>
+                                    <input type="password" class="form-control" name="password"
+                                           placeholder="输入密码">
+                                </div>
+                                <div class="login">
+
+                                    <button type="button" class="btn" id="denlubtn">登录
+                                    </button>
+                                    {#                        <a href="{% url 'login' %}" class="btn btn-info">登录</a>#}
+                                    <a class="forget_pwd" href="{% url 'findbackpwd' %}">忘记密码</a>
+                                </div>
+                                <p id="jsCompanyTips"></p>
+                            </form>
+
+
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div>
+                            <ul class="list-group">
+                                <li class="list-group-item">话题排行</li>
+                                <li class="list-group-item">
+                                    {% for topic in all_topic %}
+                                        {{ forloop.counter }}.
+                                        <a href="{% url 'weibo:topic' topic.id %}">#{{ topic.topicname }}#</a>
+                                        <br>
+                                    {% endfor %}
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- main结束 -->
+
+        {#    分页#}
+        <div class="pagination" style=" position: absolute ;left: 500px; bottom: auto">
+            {% if blogs.has_previous %}
+                <a href="?{{ blogs.previous_page_number.querystring }}"
+                   class="prev">&lsaquo;&lsaquo; 上一页</a>
+
+            {% endif %}
+            {% for page in blogs.pages %}
+                {% if page %}
+                    {% ifequal page blogs.number %}
+                        <span class="current page">{{ page }}</span>
+                    {% else %}
+                        <a href="?{{ page.querystring }}" class="page">{{ page }}</a>
+                    {% endifequal %}
+                {% else %}
+                    ...
+                {% endif %}
+            {% endfor %}
+            {% if blogs.has_next %}
+                <a href="?{{ blogs.next_page_number.querystring }}" class="next">下一页 &rsaquo;&rsaquo;</a>
+            {% endif %}
+        </div>
+    </div><!-- wrap结束 -->
+
+
+</div>
+
+
+</body>
+
+<script>
+    $(function () {
+        {#主界面登陆#}
+        $('#denlubtn').on('click', function () {
+            {#alert('hghj')#}
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "{% url "mainpagelogin" %}",
+                data: $('#denluform').serialize(),
+                async: true,
+                success: function (data) {
+                    if (data.status == 'success') {
+                        $('#denluform')[0].reset();
+                        alert("登录成功")
+                        window.location.reload()
+                    } else if (data.status == 'fail') {
+                        $('#jsCompanyTips').html(data.msg)
+                    }
+                },
+            });
+        });
+
+        {#发布微博#}
+        {#        $('#sendblogbtn').on('click', function () {#}
+        {#            $.ajax({#}
+        {#                cache: false,#}
+        {#                type: "POST",#}
+        {#                url: "{% url "weibo:sendblog" %}",#}
+        {#                data: $('#blogcontentform').serialize(),#}
+        {#                async: true,#}
+        {#                success: function (data) {#}
+        {#                    if (data.status == 'success') {#}
+        {#                        $('#blogcontentform')[0].reset();#}
+        {#                        alert("已发布")#}
+        {#                        window.location('/')#}
+        {#                    } else if (data.status == 'fail') {#}
+        {#                        $('#sendCompanyTips').html(data.msg)#}
+        {#                    }#}
+        {#                },#}
+        {#            })#}
+        {#        });#}
+
+        {#搜索话题#}
+        {#$('#topicSearchbtn').on('click', function () {#}
+        {#    $.ajax({#}
+        {#        cache: false,#}
+        {#        type: "POST",#}
+        {#        url: "{% url "weibo:search" %}",#}
+        {#        data: $('#topicSearchform').serialize(),#}
+        {#        async: true,#}
+        {#        success: function (data) {#}
+        {#            if (data.status == 'success') {#}
+        {#                $('#topicSearchform')[0].reset();#}
+        {#                alert("已发布")#}
+        {#                window.location('/')#}
+        {#            } else if (data.status == 'fail') {#}
+        {#                $('#topicSearchtip').html(data.msg)#}
+        {#            }#}
+        {#        },#}
+        {#    })#}
+        {#{);#}
+
+        {#收藏和已收藏变换#}
+        $('#collecttag').click(function () {
+            {#alert("sdfasfsa")#}
+            collectcontent = $('#collcontent').html();
+            {#alert("33333")#}
+            if (collectcontent == "收藏") {
+                alert("1111111")
+                window.location.reload()
+                this.children().html("已收藏");
+
+            }
+            else {
+                alert("asdd");
+                this.children().html("收藏")
+
+            }
+            alert("qqqqqq")
+
+        });
+
+
+        $('#chooseImage').on('change', function () {
+            var filePath = $(this).val(),         //获取到input的value，里面是文件的路径
+                fileFormat = filePath.substring(filePath.lastIndexOf(".")).toLowerCase(),
+                src = window.URL.createObjectURL(this.files[0]); //转成可以在本地预览的格式
+            // 检查是否是图片
+            if (!fileFormat.match(/.png|.jpg|.jpeg/)) {
+                error_prompt_alert('上传错误,文件格式必须为：png/jpg/jpeg');
+                return;
+            }
+
+            $('#cropedBigImg').attr('src', src);
+
+        });
+
+    })
+</script>
+</html>

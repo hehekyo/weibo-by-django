@@ -1,0 +1,87 @@
+.blog_bottom
+{
+    border-top:1px solid #BEBEBE;
+    /*border-bottom:1px solid #BEBEBE;*/
+    padding: 5px;
+}
+
+.blog_bottom li
+{
+    height:21px;
+    float:left;
+    list-style-type: none;
+    width:160px;
+    line-height:21px;
+    font-size:14px;
+    text-align:center;
+
+    border-right:1px solid #BEBEBE;
+}
+
+.blog_main
+{
+   width: 600px;
+}
+.overflow_hidden
+{
+    overflow:hidden;
+}
+.blog_body
+{
+    padding-bottom: 0;
+}
+.comment_icon
+{
+    float: left;
+    height: 30px;
+    width: 30px;
+}
+.comment_main
+{
+    float: left;
+    width: 600px;
+    margin-left: 8px;
+}
+.comment
+{
+    overflow: hidden;
+    border-top:1px solid #BEBEBE;
+    padding: 5px;
+}
+.comment_div
+{
+    height: auto;
+    padding: 15px;
+
+}
+.comment_bottom
+{
+    margin-top: 10px;
+}
+.comment_bottom_right
+{
+    width:100px;
+    float:right;
+}
+.comment_bottom_right li
+{
+    float:left;
+    width:50px;
+    list-style-type: none;
+}
+.comment_bottom_right a
+{
+    text-decoration: none;
+}
+.submit_button
+{
+    float: right;
+}
+.send_comment
+{
+    overflow: hidden;
+}
+.comment_time
+{
+    color: #8E8E8E;
+}

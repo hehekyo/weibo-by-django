@@ -1,0 +1,81 @@
+{% extends 'base2.html' %}
+{% block title %}我的粉丝{% endblock %}
+{% load static %}
+
+{% block top %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="top_user_info">
+            <div class="top_user_icon"><a href="/user/{{ user.id}}">
+                <img src="{{ MEDIA_URL }}{{ user.image }}" alt="" class="img-circle img-responsive">
+            </a>
+            </div>
+
+            <div class="top_user_name">
+
+            </div>
+            <div class="top_user_intro">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{%  block left %}
+<div class="panel panel-default">
+    <div class="panel-body">
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+{%  block right %}
+{#该用户所有关注的人#}
+
+
+    <div class="panel panel-default">
+    <div class="panel-body">
+        {% for follow in follows %}
+            <div class="one_user">
+                <div class="follow_user_icon">
+                    <a href="/user/{{ follow.follow_user.id }}">
+                        <img src="{{ MEDIA_URL }}{{ follow.follow_user.image }}" class="img-circle img-responsive">
+                    </a>
+
+                </div>
+
+                <div class="follow_user_info">
+                    <p>{{ follow.follow_user.nickname }}</p>
+                    <p>
+                        {% if follow.mutual %}
+                            互相关注
+                            {% else %}
+                            粉丝
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block custom_css %}
+    <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+{% endblock %}
+
+{% block custom_js %}
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+</script>
+    <script>
+
+    </script>
+{% endblock %}

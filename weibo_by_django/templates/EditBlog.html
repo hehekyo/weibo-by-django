@@ -1,0 +1,68 @@
+{% extends 'UserPage.html' %}
+
+{% block middlePart %}
+
+<div class="panel panel-default">
+                    <div class="panel-body ">
+
+                        <div class="title_area">
+                            <p>有什么新鲜事想要告诉大家</p>
+                        </div>
+                        <div class="form-group ">
+                            <form role="form" id="blogcontentform" class="container" enctype="multipart/form-data"
+                                  action="{% url "weibo:editblog" blog.id %}" method="post">
+                                {% csrf_token %}
+
+                                <!-- <label for="name">文本框</label> -->
+                                <textarea class="form-control " id="inputarea" rows="3" name="content" style="width: 45%" placeholder="{{ blog.content }}" onFocus="this" onBlur="this.placeholder='{{ blog.content }}'"></textarea>
+                                <p>原图<br><img src="{{ MEDIA_URL }}{{ blog.image }}" style="height:200px;width: 200px;"></p>
+                                <img id="cropedBigImg" value='custom' alt="图片区" data-address='' title="上传图片"
+                                     style="height: 50px;width: 100px;"/>
+                                <label class="ui-upload">图片
+                                    <input type="file" style="display: none;" id="chooseImage" name="image">
+
+                                </label>
+
+                                <button type="submit" class="btn btn-info col-sm-offset-3" id="sendblogbtn">发布</button>
+
+                            </form>
+                        </div>
+                        <!--                           <label for="upload" class="ui-upload">upload</label>
+                                                  <input type="file" id="upload" style="display: none;" /> -->
+
+
+                        {#                        <div class="input_bottom">#}
+                        {##}
+                        {#                            <button type="button" class="btn right_btn" id="sendblogbtn">发布</button>#}
+                        {#                        </div>#}
+                    </div>
+                    <p id="sendCompanyTips"></p>
+                </div>
+{% endblock %}
+
+
+{% block my_js %}
+    <script>
+    $(function () {
+
+        $('#inputarea').val('{{ blog.content }}').focus().val("{{ blog.content }}")
+
+         $('#chooseImage').on('change', function () {
+            var filePath = $(this).val(),         //获取到input的value，里面是文件的路径
+                fileFormat = filePath.substring(filePath.lastIndexOf(".")).toLowerCase(),
+                src = window.URL.createObjectURL(this.files[0]); //转成可以在本地预览的格式
+            // 检查是否是图片
+            if (!fileFormat.match(/.png|.jpg|.jpeg/)) {
+                error_prompt_alert('上传错误,文件格式必须为：png/jpg/jpeg');
+                return;
+            }
+
+            $('#cropedBigImg').attr('src', src);
+
+        });
+
+    });
+
+
+    </script>
+{% endblock %}

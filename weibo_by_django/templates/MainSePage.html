@@ -1,0 +1,11 @@
+{% extends 'MainPage.html' %}
+
+{% block  sech %}
+    <li {% if sort == 'time' or sort == '' %}class="active"{% endif %}><a
+            href="/">全部</a>
+    </li>
+    <li {% if sort == 'hot' %}class=""{% endif %}><a href="/?sort=hot">热门</a></li>
+    <li {% if sort == 'comment' %}class="active"{% endif %}><a
+            href="/?sort=comment">评论</a>
+    </li>
+{% endblock %}

@@ -1,0 +1,241 @@
+{% extends 'base2.html' %}
+{% block title %}微博详情页{% endblock %}
+{% load static %}
+{% block left %}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            微博内容
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block right %}
+
+    {#微博主题内容#}
+    <div class="panel panel-default">
+
+        <div class="panel-body blog_body">
+            <div class="overflow_hidden">
+                <div class="user_icon">
+                    <img src="{{ MEDIA_URL }}{{ blog.user.image }}" class="img-circle img-responsive">
+                </div>
+                <div class="blog_main">
+                    <div class="blog_user">{{ blog.user.nickname }}</div>
+                    <div class="blog_time">{{ blog.add_time }}</div>
+                    <div class="blog_content">
+                        <p>
+                            {% autoescape off %}
+                                {{ blog.content }}
+                            {% endautoescape %}
+                        </p>
+                    </div>
+                    {% if blog.has_pic == 1 %}
+                        <div><img src="{{ MEDIA_URL }}{{ blog.image }}"
+                                  style="width: 400px;height: 240px;"></div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="blog_bottom">
+                <ul>
+                    <li><a href="{% url 'weibo:collect' blog.id %}"><span
+                            class="glyphicon glyphicon-star-empty">收藏{{ blog.collect_num }} </span></a></li>
+                    <li><a href="{% url 'weibo:blogtext' blog.id %}"><span
+                            class="glyphicon glyphicon-new-window">阅读{{ blog.click_num }}</span></a></li>
+                    <li><a href="{% url 'weibo:blogtext' blog.id %}"><span
+                            class="glyphicon glyphicon-comment">评论{{ blog.comment_num }}</span></a></li>
+                    <li class="lastItem"><a href="{% url 'weibo:good' blog.id %}"><span
+                            class="glyphicon glyphicon-thumbs-up">点赞{{ blog.good_num }}</span></a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        {#微博评论#}
+        <div class="panel-footer comment_div">
+
+            <div class="send_comment" id="comment">
+                {#                <form action="" method="post">#}
+                <form action="{% url "weibo:add_comment" blog.id %}" method="post">
+                    {% csrf_token %}
+                    <textarea class="form-control" rows="2" id="blog_text" name="blog_text"></textarea>
+
+                    <div class="submit_button">
+                        <button type="button" class="btn-xs submit_comment">发表评论</button>
+                    </div>
+
+                </form>
+            </div>
+
+
+
+            {% for comment in comments %}
+                <div class="comment" id="comment">
+                    {#                <form action="" method="post">#}
+                    <form action="{% url "weibo:add_comment" blog.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="comment_icon">
+                            <img src="{{ MEDIA_URL }}{{ comment.user.image }}" class="img-circle img-responsive">
+                        </div>
+                        <input type="hidden" name="user_id" value="{{ comment.user.id }}">
+                        <div class="comment_main">
+                            <a href="{% url 'user:userpage' comment.user.id %}">{{ comment.user.nickname }}</a>
+                            {% if comment.reply_user %}
+                                回复<a href="{% url 'user:userpage' comment.reply_user.id %}">{{ comment.reply_user }}</a>
+                            {% endif %}
+                            :{{ comment.comment }}
+                            <div class="comment_bottom">
+                                <span class="comment_time">{{ comment.add_time }}</span>
+                                <div class="comment_bottom_right">
+                                    <ul>
+                                        <li><a href="">点赞</a></li>
+                                        <li><a href="javascript:void(0)" class="comment_a">回复</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hidden_comment">
+                            <textarea class="form-control" rows="1" id="blog_text" name="blog_text"></textarea>
+
+                            <div class="submit_button">
+                                <button type="button" class="btn-xs submit_comment">发表评论</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            {% endfor %}
+
+
+            {#            <div class="comment" id="comment">#}
+            {#                <form action="">#}
+            {##}
+            {#                <div class="comment_icon">#}
+            {#                    <img src="{% static 'images/2018102819422361018.jpg' %}" class="img-circle img-responsive">#}
+            {#                </div>#}
+            {##}
+            {#                <div class="comment_main">#}
+            {#                    <a href="">wwqe</a>:BC纪录片《人生七年》，从1964年开始跟拍14个来自不同阶层的孩子，从他们的7岁拍到56岁。半个#}
+            {#                    <div class="comment_bottom">#}
+            {#                        <span>2017年9月9日</span>#}
+            {#                        <div class="comment_bottom_right">#}
+            {#                            <ul>#}
+            {#                                <li><a href="">点赞</a></li>#}
+            {#                                <li><a href="javascript:void(0)" class="comment_a">回复</a></li>#}
+            {#                            </ul>#}
+            {#                        </div>#}
+            {#                    </div>#}
+            {#                </div>#}
+            {##}
+            {#                    <div class="hidden_comment">#}
+            {#                        <textarea class="form-control" rows="1" id="blog_text" name="blog_text"></textarea>#}
+            {##}
+            {#                        <div class="submit_button">#}
+            {#                            <button type="button" class="btn-xs">发表评论</button>#}
+            {#                        </div>#}
+            {#                     </div>#}
+            {#                </form>#}
+            {#            </div>#}
+
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block custom_css %}
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}">
+{% endblock %}
+
+{% block custom_js %}
+    <script>
+        $(document).ready(function () {
+            $('.hidden_comment').hide();
+
+
+            $('.comment_a').click(function () {
+                $('.hidden_comment').hide();
+                {#$('.hidden_comment').show();#}
+                $(this).parents('#comment').find('.hidden_comment').show();
+            });
+
+
+            $('.submit_button').click(function () {
+                {% if not request.user.is_authenticated %}
+                    shogMinLogin();
+                    return false;
+                {% endif %}
+
+                {#var text = $(this).parents('#comment').find('textarea').text();#}
+                {#alert(text);#}
+                var text = $(this).parents('#comment').find('textarea').val();
+                {#alert(text);#}
+                if (text == "")
+                    alert("空文本");
+                else {
+                    alert(text);
+                    $(this).parents('#comment').find('form').submit();
+                }
+
+
+                {#var text = $(this).parents('#comment').find('textarea').html();#}
+                {#alert(text);#}
+            })
+
+            document.getElementById("close_minilogin").onclick = closeLogin;
+            document.getElementById("firstLine").onmousedown = moveLogin;
+
+
+            function shogMinLogin() {
+                var mini_login = document.getElementsByClassName("mini_login")[0];
+                var cover = document.getElementsByClassName("cover")[0];
+                mini_login.style.display = "block";
+                cover.style.display = "block";
+
+                mini_login.style.left = (document.body.scrollWidth - mini_login.scrollWidth) / 2 + "px";
+                mini_login.style.top = (document.body.scrollHeight - mini_login.scrollHeight) / 2 + "px";
+            }
+
+            /* 关闭登录窗口 */
+            function closeLogin() {
+                var mini_login = document.getElementsByClassName("mini_login")[0];
+                var cover = document.getElementsByClassName("cover")[0];
+                mini_login.style.display = "none";
+                cover.style.display = "none";
+            }
+
+            /* 移动登录窗口 */
+            function moveLogin(event) {
+                var moveable = true;
+
+                //获取事件源
+                event = event ? event : window.event;
+                var clientX = event.clientX;
+                var clientY = event.clientY;
+
+                var mini_login = document.getElementById("mini_login");
+                console.log(mini_login);
+                var top = parseInt(mini_login.style.top);
+                var left = parseInt(mini_login.style.left);//鼠标拖动
+                document.onmousemove = function (event) {
+                    if (moveable) {
+                        event = event ? event : window.event;
+                        var y = top + event.clientY - clientY;
+                        var x = left + event.clientX - clientX;
+                        if (x > 0 && y > 0) {
+                            mini_login.style.top = y + "px";
+                            mini_login.style.left = x + "px";
+                        }
+                    }
+                }
+                //鼠标弹起
+                document.onmouseup = function () {
+                    moveable = false;
+                }
+            }
+        })
+
+    </script>
+{% endblock %}

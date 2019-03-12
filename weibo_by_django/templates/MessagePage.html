@@ -1,0 +1,63 @@
+{% extends 'base2.html' %}
+{% block title %}提到我的{% endblock %}
+{% load static %}
+
+
+
+{%  block left %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        提到我的消息
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+{%  block right %}
+{#所有微博按热度排名#}
+
+{% for blog in blogs %}
+    <div class="panel panel-default">
+
+        <div class="panel-body">
+            <div class="user_icon">
+                <a href="/user/{{ request.user.id }}"><img src="{{ MEDIA_URL }}{{ blog.user.image }}" class="img-circle img-responsive"></a>
+{#                <a href="{% url 'miniblog:homepage' blog.user.id %}"><img src="{{ MEDIA_URL }}{{ blog.user.image }}" class="img-circle img-responsive"></a>#}
+            </div>
+            <div class="blog_main">
+                <div class="blog_user">{{ blog.user.nickname }}</div>
+                <div class="blog_time">{{ blog.add_time }}</div>
+                <div class="blog_content">
+                    <p>
+                        {% autoescape off %}
+                     {{ blog.content }}
+                        {% endautoescape %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer blog_bottom">
+            <ul>
+                <li><span class="glyphicon glyphicon-star-empty">收藏</span></li>
+                <li><span class="glyphicon glyphicon-new-window">转发</span></li>
+{#                <a href={% url 'miniblog:blog_detail' blog.id %}><li><span class="glyphicon glyphicon-comment">评论</span></li></a>#}
+                <a href=""><li><span class="glyphicon glyphicon-comment">评论</span></li></a>
+                <li class="lastItem"><span class="glyphicon glyphicon-thumbs-up">点赞</span></li>
+            </ul>
+        </div>
+
+    </div>
+{% endfor %}
+
+{% endblock %}
+
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+{% endblock %}
+
+{% block custom_js %}
+
+{% endblock %}

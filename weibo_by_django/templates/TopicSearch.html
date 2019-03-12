@@ -1,0 +1,41 @@
+{% extends 'MainPage.html' %}
+
+{% block title %}话题搜索{% endblock %}
+
+{% block send_blog %}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <p>话题搜索结果</p>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block blog_mid %}
+    {% if search_topic.object_list %}
+        {% for topic in search_topic.object_list %}
+            <div class="panel panel-default">
+
+                <div class="panel-body">
+
+                    <a href="{% url 'weibo:topic' topic.id %}">#{{ topic.topicname }}#</a>
+
+                </div>
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="panel panel-default">
+
+            <div class="panel-body">
+
+               <p>未找到相关话题</p>
+
+            </div>
+
+        </div>
+    {% endif %}
+{% endblock %}
+
+
+{% block sort %}{% endblock %}
